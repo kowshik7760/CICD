@@ -1,0 +1,30 @@
+name: MLOps CI/CD
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install scikit-learn joblib pytest
+      - run: python train.py
+      - run: pytest -v
+
+  deploy:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying model to cloud..."
+
+# ------------------------------------------------------------
+# HOW TO RUN
+#   This file runs on GitHub's servers, not on your PC.
+#   It must be at .github/workflows/ci.yml in the repo.
+#   Every push to the main branch starts it automatically.
+#   View results: repo on github.com -> Actions tab.
+# ------------------------------------------------------------
